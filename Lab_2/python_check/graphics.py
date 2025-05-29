@@ -48,6 +48,7 @@ x_omp, y_omp = read_data_from_file(filename_2)
 x, y = mean_update(x, y)
 x_omp, y_omp = mean_update(x_omp, y_omp)
 delta = y/y_omp 
+print("Среднее значение дельты:", np.mean(delta))
 
 plt.plot(x, delta)  
 plt.title('Сравнение однопоточного алгоритма с OMP(4 потока)')  
