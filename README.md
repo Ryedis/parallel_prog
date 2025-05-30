@@ -46,4 +46,55 @@
 ### Работа на суперкомпьютере "Сергей Королев"
 ![График](https://github.com/Ryedis/parallel_prog/blob//master/Lab_3/korolev/korolev_comprasion.png)
 На суперкомпьютере алогритм работает лучше, можно сказать, что прирост улучшения линейно связан с потоками.
-[Вывод 4 потока](https://github.com/Ryedis/parallel_prog/blob//master/Lab_3/korolev/slurm-124112.out) [Вывод_12 потоков](https://github.com/Ryedis/parallel_prog/blob//master/Lab_3/korolev/slurm-124114.out)
+
+
+# Отчет ЛАБ.4
+
+В данной лабораторной работе была реализована параллельная версия алгоритма умножения квадратных матриц с использованием CUDA.
+
+## Общий алгоритм
+
+- Каждый поток отвечает за рассчет одного элемента финальной матрицы.
+- Для покрытия всей матрицы используется CUDA-сетка из блоков потоков
+
+`dim3 block(blockSizeX, blockSizeY);`
+
+`dim3 grid((N + block.x - 1) / block.x, (N + block.y - 1) / block.y);`
+
+Пример расчета: 
+
+- Выделение памяти и загрузка с CPU на GPU
+
+` cudaMalloc((void**)&d_A, size);`
+
+`cudaMalloc((void**)&d_B, size);`
+
+`cudaMalloc((void**)&d_C, size);`
+
+`cudaMemcpy(d_A, h_A, size, cudaMemcpyHostToDevice);`
+
+`cudaMemcpy(d_B, h_B, size, cudaMemcpyHostToDevice);`
+
+- Далее запускается функция вычисления матрицы `matrixMulCUDA(const float* A, const float* B, float* C, int N) `
+
+- Вычисляются индексы строки и столбца для каждого потока
+
+` int row = blockIdx.y * blockDim.y + threadIdx.y;`
+
+`int col = blockIdx.x * blockDim.x + threadIdx.x;`
+
+где 
+
+`blockIdx.x/y` - Индекс текущего блока по X/Y
+
+`blockDim.x/y` - Размер блока (кол-во потоков в одном блоке)
+
+`threadIdx.x/y` - Индекс потока внутри блока
+
+
+## Результаты
+![Результаты](https://github.com/Ryedis/parallel_prog/blob/master/Lab_4/python_check/result.png)
+
+## Выводы:
+
+Анализ графиков показал, что увеличение размера блоков положительно сказывается на эффективности работы: при более крупных блоках уменьшается их общее число, что снижает накладные расходы на управление. При этом для матриц размером менее 5000 элементов различия между блоками размером 16 и 32 практически не наблюдается. Тем не менее, можно предположить, что при работе с более крупными матрицами эффект от увеличения размера блока станет значительно заметнее.
