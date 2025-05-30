@@ -70,7 +70,7 @@ class Matrix {
 
 
 
-			#pragma omp parallel num_threads(4)
+			#pragma omp parallel num_threads(20)
 			{
 				#pragma omp for
 				for (int i = 0; i < _rows; ++i) {

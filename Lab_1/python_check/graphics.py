@@ -18,7 +18,7 @@ def read_data_from_file(filename):
 filename = 'log.txt'  
 x, y = read_data_from_file(filename)
 
-plt.scatter(x, y, marker='o', color='r', s=10)
+plt.scatter(x, y, marker='o', color='b', s=10)
 plt.title('График результатов вычислений')  
 plt.xlabel('Размер матрицы n*n') 
 plt.ylabel('Время выполнения (нс)') 
